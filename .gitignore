@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.firebase/
+debug_token.txt
+firebase-debug.log

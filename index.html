@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- For the hosted site: if we demo on-device inference publicly, add the
+         Prompt API Chrome Origin Trial token here (see PREP.md notes). -->
+    <!-- <meta http-equiv="origin-trial" content="REPLACE_WITH_ORIGIN_TRIAL_TOKEN" /> -->
+    <title>Privacy Firewall - #BuildHybridAI 2026</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 56rem; padding: 0 1rem; line-height: 1.5; }
+      .chip { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 999px; background: #eef; font-size: 0.85rem; }
+      .chip.cloud { background: #ffe9c9; }
+      .chip.device { background: #d8f5d0; }
+      textarea { width: 100%; min-height: 5rem; box-sizing: border-box; }
+      textarea#sourceText { min-height: 8rem; }
+      pre { background: #f6f6f6; padding: 1rem; white-space: pre-wrap; word-break: break-word; min-height: 4rem; }
+      pre#beforeView { user-select: text; }
+      button { padding: 0.5rem 1rem; font-size: 1rem; }
+      button:disabled { opacity: 0.5; }
+      .panels { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+      @media (min-width: 720px) { .panels { grid-template-columns: 1fr 1fr; } }
+      .panel h3 { margin-bottom: 0.25rem; }
+      .hint { font-size: 0.9rem; color: #444; }
+      .warn { background: #fff7e0; border: 1px solid #e5cf8a; padding: 0.5rem 0.75rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Privacy Firewall</h1>
+    <p><strong>Ask AI anything without leaking anything.</strong></p>
+    <p>Paste private text and a question. The firewall cleans the text
+       <strong>on this device first</strong>: phone numbers, emails, one-time codes,
+       card and ID numbers and addresses are blacked out. Only the cleaned text
+       is sent for an answer, and only after you approve it.</p>
+
+    <p>Status: <span id="status" class="chip">loading...</span></p>
+
+    <h2>Step 1: Paste your text and your question</h2>
+    <label for="sourceText">Your text (stays on this device)</label>
+    <textarea id="sourceText">My landlord can be reached on 0803 555 1234. The gate code is 4821 and my rent account number is 0123456789. My email is tenant.example@testmail.com.</textarea>
+    <label for="question">Your question about the text</label>
+    <textarea id="question" placeholder="Type your question...">Write a polite message asking for two more weeks to pay the rent.</textarea>
+    <p>
+      <button id="cleanBtn">Clean my text (on this device)</button>
+    </p>
+
+    <h2>Step 2: Check the cleaned copy</h2>
+    <div class="panels">
+      <div class="panel">
+        <h3>Before (original, never sent)</h3>
+        <pre id="beforeView">(nothing cleaned yet)</pre>
+        <p class="hint">Missed something? Select the words in the Before view,
+           then tap the button below to black them out yourself.</p>
+        <button id="blackoutBtn" disabled>Black out selection</button>
+      </div>
+      <div class="panel">
+        <h3>After (cleaned, this is what gets sent)</h3>
+        <pre id="afterView">(nothing cleaned yet)</pre>
+        <p id="findingsSummary" class="hint"></p>
+      </div>
+    </div>
+    <p class="warn">Check the cleaned copy before you ask. The finder is
+       pattern code on this device: it is good, not perfect. Black out anything
+       it missed. Nothing is sent anywhere until you press Ask.</p>
+
+    <h2>Step 3: Ask with the cleaned text only</h2>
+    <p>
+      <button id="askBtn" disabled>Ask with cleaned text only</button>
+      <span id="sourceBadge" class="chip" hidden></span>
+    </p>
+    <pre id="answer">(no answer yet)</pre>
+    <p id="receipt" class="hint"></p>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
