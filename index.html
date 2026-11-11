@@ -8,68 +8,119 @@
     <!-- <meta http-equiv="origin-trial" content="REPLACE_WITH_ORIGIN_TRIAL_TOKEN" /> -->
     <title>Privacy Firewall - #BuildHybridAI 2026</title>
     <style>
-      body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 56rem; padding: 0 1rem; line-height: 1.5; }
-      .chip { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 999px; background: #eef; font-size: 0.85rem; }
-      .chip.cloud { background: #ffe9c9; }
-      .chip.device { background: #d8f5d0; }
-      textarea { width: 100%; min-height: 5rem; box-sizing: border-box; }
+      :root {
+        --ink: #14201c;
+        --teal: #0e6e5c;
+        --teal-dark: #0a5346;
+        --paper: #f4f8f6;
+        --card: #ffffff;
+        --line: #d7e3de;
+      }
+      * { box-sizing: border-box; }
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        margin: 0 auto; max-width: 56rem; padding: 0 1rem 3rem;
+        line-height: 1.55; color: var(--ink); background: var(--paper);
+      }
+      header.hero {
+        background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+        color: #fff; border-radius: 0 0 18px 18px;
+        padding: 1.6rem 1.4rem 1.3rem; margin: 0 -1rem 1.2rem;
+      }
+      header.hero h1 { margin: 0 0 0.3rem; font-size: 1.9rem; }
+      header.hero p { margin: 0.25rem 0; }
+      header.hero .tagline { font-size: 1.1rem; }
+      section.card {
+        background: var(--card); border: 1px solid var(--line);
+        border-radius: 14px; padding: 1rem 1.2rem 1.2rem; margin: 1rem 0;
+        box-shadow: 0 1px 3px rgba(10, 83, 70, 0.07);
+      }
+      section.card h2 { margin-top: 0.2rem; font-size: 1.2rem; color: var(--teal-dark); }
+      .chip { display: inline-block; padding: 0.15rem 0.65rem; border-radius: 999px; background: #e6ecea; font-size: 0.85rem; font-weight: 600; }
+      .chip.cloud { background: #ffe1b3; }
+      .chip.device { background: #c9f2c0; }
+      label { font-weight: 600; display: block; margin: 0.7rem 0 0.3rem; }
+      textarea {
+        width: 100%; min-height: 5rem; padding: 0.6rem 0.7rem;
+        border: 1px solid var(--line); border-radius: 10px;
+        font: inherit; background: #fbfdfe;
+      }
       textarea#sourceText { min-height: 8rem; }
-      pre { background: #f6f6f6; padding: 1rem; white-space: pre-wrap; word-break: break-word; min-height: 4rem; }
-      pre#beforeView { user-select: text; }
-      button { padding: 0.5rem 1rem; font-size: 1rem; }
-      button:disabled { opacity: 0.5; }
+      pre {
+        background: #f2f6f4; border: 1px solid var(--line); border-radius: 10px;
+        padding: 0.9rem 1rem; white-space: pre-wrap; word-break: break-word; min-height: 4rem;
+      }
+      pre#answer { background: #eefaf3; }
+      button {
+        padding: 0.6rem 1.15rem; font-size: 1rem; font-weight: 600;
+        color: #fff; background: var(--teal); border: none; border-radius: 999px; cursor: pointer;
+      }
+      button:hover:not(:disabled) { background: var(--teal-dark); }
+      button:disabled { opacity: 0.45; cursor: default; }
+      #blackoutBtn { background: #5b6b66; }
       .panels { display: grid; grid-template-columns: 1fr; gap: 1rem; }
       @media (min-width: 720px) { .panels { grid-template-columns: 1fr 1fr; } }
-      .panel h3 { margin-bottom: 0.25rem; }
-      .hint { font-size: 0.9rem; color: #444; }
-      .warn { background: #fff7e0; border: 1px solid #e5cf8a; padding: 0.5rem 0.75rem; }
+      .panel h3 { margin: 0.2rem 0 0.35rem; font-size: 1rem; }
+      .hint { font-size: 0.9rem; color: #44554f; }
+      .warn { background: #fff7e0; border: 1px solid #e5cf8a; border-radius: 10px; padding: 0.6rem 0.8rem; }
+      footer { margin-top: 1.6rem; font-size: 0.9rem; color: #44554f; text-align: center; }
     </style>
   </head>
   <body>
-    <h1>Privacy Firewall</h1>
-    <p><strong>Ask AI anything without leaking anything.</strong></p>
-    <p>Paste private text and a question. The firewall cleans the text
-       <strong>on this device first</strong>: phone numbers, emails, one-time codes,
-       card and ID numbers and addresses are blacked out. Only the cleaned text
-       is sent for an answer, and only after you approve it.</p>
+    <header class="hero">
+      <h1>🛡️ Privacy Firewall</h1>
+      <p class="tagline"><strong>Ask AI anything without leaking anything.</strong></p>
+      <p>Paste private text and a question. The firewall cleans the text
+         <strong>on this device first</strong>: phone numbers, emails, one-time codes,
+         card and ID numbers and addresses are blacked out. Only the cleaned text
+         is sent for an answer, and only after you approve it.</p>
+    </header>
 
     <p>Status: <span id="status" class="chip">loading...</span></p>
 
-    <h2>Step 1: Paste your text and your question</h2>
-    <label for="sourceText">Your text (stays on this device)</label>
-    <textarea id="sourceText">My landlord can be reached on 0803 555 1234. The gate code is 4821 and my rent account number is 0123456789. My email is tenant.example@testmail.com.</textarea>
-    <label for="question">Your question about the text</label>
-    <textarea id="question" placeholder="Type your question...">Write a polite message asking for two more weeks to pay the rent.</textarea>
-    <p>
-      <button id="cleanBtn">Clean my text (on this device)</button>
-    </p>
+    <section class="card">
+      <h2>Step 1: Paste your text and your question</h2>
+      <label for="sourceText">Your text (stays on this device)</label>
+      <textarea id="sourceText">My landlord can be reached on 0803 555 1234. The gate code is 4821 and my rent account number is 0123456789. My email is tenant.example@testmail.com.</textarea>
+      <label for="question">Your question about the text</label>
+      <textarea id="question" placeholder="Type your question...">Write a polite message asking for two more weeks to pay the rent.</textarea>
+      <p>
+        <button id="cleanBtn">Clean my text (on this device)</button>
+      </p>
+    </section>
 
-    <h2>Step 2: Check the cleaned copy</h2>
-    <div class="panels">
-      <div class="panel">
-        <h3>Before (original, never sent)</h3>
-        <pre id="beforeView">(nothing cleaned yet)</pre>
-        <p class="hint">Missed something? Select the words in the Before view,
-           then tap the button below to black them out yourself.</p>
-        <button id="blackoutBtn" disabled>Black out selection</button>
+    <section class="card">
+      <h2>Step 2: Check the cleaned copy</h2>
+      <div class="panels">
+        <div class="panel">
+          <h3>Before (original, never sent)</h3>
+          <pre id="beforeView">(nothing cleaned yet)</pre>
+          <p class="hint">Missed something? Select the words in the Before view,
+             then tap the button below to black them out yourself.</p>
+          <button id="blackoutBtn" disabled>Black out selection</button>
+        </div>
+        <div class="panel">
+          <h3>After (cleaned, this is what gets sent)</h3>
+          <pre id="afterView">(nothing cleaned yet)</pre>
+          <p id="findingsSummary" class="hint"></p>
+        </div>
       </div>
-      <div class="panel">
-        <h3>After (cleaned, this is what gets sent)</h3>
-        <pre id="afterView">(nothing cleaned yet)</pre>
-        <p id="findingsSummary" class="hint"></p>
-      </div>
-    </div>
-    <p class="warn">Check the cleaned copy before you ask. The finder is
-       pattern code on this device: it is good, not perfect. Black out anything
-       it missed. Nothing is sent anywhere until you press Ask.</p>
+      <p class="warn">Check the cleaned copy before you ask. The finder is
+         pattern code on this device: it is good, not perfect. Black out anything
+         it missed. Nothing is sent anywhere until you press Ask.</p>
+    </section>
 
-    <h2>Step 3: Ask with the cleaned text only</h2>
-    <p>
-      <button id="askBtn" disabled>Ask with cleaned text only</button>
-      <span id="sourceBadge" class="chip" hidden></span>
-    </p>
-    <pre id="answer">(no answer yet)</pre>
-    <p id="receipt" class="hint"></p>
+    <section class="card">
+      <h2>Step 3: Ask with the cleaned text only</h2>
+      <p>
+        <button id="askBtn" disabled>Ask with cleaned text only</button>
+        <span id="sourceBadge" class="chip" hidden></span>
+      </p>
+      <pre id="answer">(no answer yet)</pre>
+      <p id="receipt" class="hint"></p>
+    </section>
+
+    <footer>Cleaning happens on your device. Answers come from Firebase AI Logic (hybrid: on-device where Chrome supports it, cloud otherwise). Built for #BuildHybridAI 2026.</footer>
 
     <script type="module" src="/src/main.js"></script>
   </body>
